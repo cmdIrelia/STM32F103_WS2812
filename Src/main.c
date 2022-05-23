@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under BSD 3-Clause license,
@@ -65,12 +65,11 @@ void SystemClock_Config(void);
   * @brief  The application entry point.
   * @retval int
   */
-	
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	uint8_t R=0xff,G=0xff,B=0xff;
   /* USER CODE END 1 */
-  
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -78,7 +77,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+	
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -94,58 +93,20 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 	WS28xx_TypeStructInit();
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		WS28xx.SetALLColor_RGB (0,0,0);//整体红色
+		WS28xx.show ();
+		HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+		HAL_Delay(500);
     /* USER CODE END WHILE */
-    /* USER CODE BEGIN 3 */
-		WS28xx.SetALLColor_RGB (255,0,0);//整体红色
-		WS28xx.show ();
-		HAL_Delay (200);
-		WS28xx.SetALLColor_RGB (0,255,0);//整体绿色
-		WS28xx.show ();
-		HAL_Delay (200);
-		WS28xx.SetALLColor_RGB (0,0,255);//整体蓝色
-		WS28xx.show ();
-		HAL_Delay (200);	
-		WS28xx.SetALLColor_RGB (0,0,0);  //集体熄灭
-		WS28xx.show ();
 
-		
-		WS28xx.SetPixelColor_RGB(0,0,0,255);//第一个亮蓝灯
-		WS28xx.show ();
-		HAL_Delay (200);		
-		WS28xx.SetALLColor_RGB (0,0,0);
-		WS28xx.SetPixelColor_RGB(1,0,0,255);//第二个亮绿灯 	
-		WS28xx.show ();
-		HAL_Delay (200);	
-		WS28xx.SetALLColor_RGB (0,0,0);
-		WS28xx.SetPixelColor_RGB(2,0,0,255);//第三个亮蓝灯 	
-		WS28xx.show ();
-		HAL_Delay (200);
-		WS28xx.SetALLColor_RGB (0,0,0);
-		WS28xx.SetPixelColor_RGB(2,0,0,255);//第四个亮蓝灯 	
-		WS28xx.show ();
-		HAL_Delay (200);
-		WS28xx.SetALLColor_RGB (0,0,0);
-		WS28xx.SetPixelColor_RGB(4,0,0,255);//第五个亮蓝灯 	
-		WS28xx.show ();
-		HAL_Delay (200);			
-		WS28xx.SetALLColor_RGB (0,0,0);
-		WS28xx.SetPixelColor_RGB(5,0,0,255);//第六个亮蓝灯 	
-		WS28xx.show ();
-		HAL_Delay (200);	
-		WS28xx.SetALLColor_RGB (0,0,0);
-		WS28xx.SetPixelColor_RGB(6,0,0,255);//第七个亮蓝灯 	
-		WS28xx.show ();
-		HAL_Delay (200);	
-		WS28xx.SetALLColor_RGB (0,0,0);
-		WS28xx.SetPixelColor_RGB(7,0,0,255);//第八个亮蓝灯 	
-		WS28xx.show ();
-		HAL_Delay (200);		
+    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
