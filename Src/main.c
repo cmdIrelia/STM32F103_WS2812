@@ -26,7 +26,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#define PI (3.1415926f)
 #include "ws2812.h"
+
+#include "cmath"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,7 +61,32 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+uint8_t makeTriangle(uint16_t index)
+{
+	uint8_t rtn = (uint8_t)(index&0xff);
+	if(index & 0x100)
+	{
+		rtn = 255-rtn;
+	}
 
+	return rtn;
+}
+
+uint8_t makeSmoothChange(uint16_t index)
+{
+	uint8_t rtn = (uint8_t)(index&0xff);
+	if(index & 0x100)
+	{
+		rtn = 255-rtn;
+	}
+	
+	double vtan = tan((	((double)((int)(rtn))-110) /300.f)*PI);
+	vtan = (vtan+2.3)*10;
+	vtan = vtan>255?255:vtan;
+	vtan = vtan<0?0:vtan;
+	rtn = (uint8_t)((int)vtan);
+	return rtn;
+}
 /* USER CODE END 0 */
 
 /**
@@ -68,7 +96,9 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	uint8_t R=0xff,G=0xff,B=0xff;
+	uint8_t R=0xff,G=0xf,B=0xf;
+	uint16_t count = 0;
+	uint8_t color_stage = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -100,10 +130,50 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		WS28xx.SetALLColor_RGB (0,0,0);//ÕûÌåºìÉ«
-		WS28xx.show ();
+		count++;
+		if(count%512==0) color_stage++;
+		R=0;G=0;B=0;
+		switch(color_stage){
+			case 0:
+				R = makeSmoothChange(count);
+				break;
+			case 1:
+				G = makeSmoothChange(count);
+				break;
+			case 2:
+				B = makeSmoothChange(count);
+				break;
+			case 3:
+				WS28xx.SetALLColor_RGB (0,0,0);WS28xx.show();HAL_Delay(200);
+				WS28xx.SetALLColor_RGB (255,128,0);WS28xx.show ();HAL_Delay(80);
+				WS28xx.SetALLColor_RGB (0,0,0);WS28xx.show();HAL_Delay(200);
+				WS28xx.SetALLColor_RGB (255,128,0);WS28xx.show ();HAL_Delay(80);
+				WS28xx.SetALLColor_RGB (0,0,0);WS28xx.show();HAL_Delay(500);
+			
+				WS28xx.SetALLColor_RGB (0,0,0);WS28xx.show();HAL_Delay(200);
+				WS28xx.SetALLColor_RGB (0,255,128);WS28xx.show ();HAL_Delay(80);
+				WS28xx.SetALLColor_RGB (0,0,0);WS28xx.show();HAL_Delay(200);
+				WS28xx.SetALLColor_RGB (0,255,128);WS28xx.show ();HAL_Delay(80);
+				WS28xx.SetALLColor_RGB (0,0,0);WS28xx.show();HAL_Delay(500);
+			
+				WS28xx.SetALLColor_RGB (0,0,0);WS28xx.show();HAL_Delay(200);
+				WS28xx.SetALLColor_RGB (128,0,255);WS28xx.show ();HAL_Delay(80);
+				WS28xx.SetALLColor_RGB (0,0,0);WS28xx.show();HAL_Delay(200);
+				WS28xx.SetALLColor_RGB (128,0,255);WS28xx.show ();HAL_Delay(80);
+				WS28xx.SetALLColor_RGB (0,0,0);WS28xx.show();HAL_Delay(500);
+			
+				color_stage = 0;
+			
+				break;
+			
+			default:
+				color_stage = 0;
+		}
+		WS28xx.SetALLColor_RGB (R,G,B);	//R,G,B
+		WS28xx.show ();	
+		
 		HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-		HAL_Delay(500);
+		HAL_Delay(1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
